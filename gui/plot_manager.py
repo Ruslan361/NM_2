@@ -16,8 +16,8 @@ class PlotManager:
 
     def plot_main_task(self, x, v, v2_interp):
         self.graph_layout.clear()
-        self.graph_layout.plot(x, v, label='v_n(x)')
-        self.graph_layout.plot(x, v2_interp, label='v_{2n}(x)')
+        self.graph_layout.plot(x, v, label='$v_{n}(x)$')
+        self.graph_layout.plot(x, v2_interp, label='$v_{2n}(x)$')
         self.graph_layout.set_title("Основная задача")
         self.graph_layout.set_xlabel("x")
         self.graph_layout.set_ylabel("v(x)")
