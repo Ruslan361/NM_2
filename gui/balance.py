@@ -130,7 +130,8 @@ class BalanceWindow(QWidget):
                     "Тестовая задача:\n"
                     f"Количество узлов = {num_nodes},\n"
                     f"Шаг сетки = {step_size}\n"
-                    f"Максимальная погрешность = {eps}, на шаге {id_eps+1}"
+                    f"Максимальная погрешность = {eps}, на шаге {id_eps+1}\n"
+                    f"При x = {x[id_eps]}"
                 )
             else:
                 if use_numpy:
@@ -143,7 +144,8 @@ class BalanceWindow(QWidget):
                     "Основная задача:\n"
                     f"Количество узлов = {num_nodes},\n"
                     f"Шаг сетки = {step_size}\n"
-                    f"Максимальная разность = {eps}, на шаге {id_eps+1}"
+                    f"Максимальная разность = {eps}, на шаге {id_eps+1}\n"
+                    f"При x = {x[id_eps]}"
                 )
 
             QMessageBox.information(self, "Результаты", self.info_message)
@@ -260,7 +262,8 @@ class BalanceWindow(QWidget):
                         "Тестовая задача:\n"
                         f"Количество узлов = {n+1},\n"
                         f"Шаг сетки = {1/n}\n"
-                        f"Максимальная погрешность = {eps}, на шаге {id_eps+1}"
+                        f"Максимальная погрешность = {eps}, на шаге {id_eps+1}\n"
+                        f"При x = {x[id_eps]}"
                     )
                 else:
                     x, v, v2_interp, eps, id_eps, _ = self.calculation_handler.perform_main_task(n)
@@ -269,7 +272,8 @@ class BalanceWindow(QWidget):
                         "Основная задача:\n"
                         f"Количество узлов = {n+1},\n"
                         f"Шаг сетки = {1/n}\n"
-                        f"Максимальная разность = {eps}, на шаге {id_eps+1}"
+                        f"Максимальная разность = {eps}, на шаге {id_eps+1}\n"
+                        f"При x = {x[id_eps]}"
                     )
 
                 QMessageBox.information(self, "Успех", f"Результаты успешно загружены из {file_path}.")
