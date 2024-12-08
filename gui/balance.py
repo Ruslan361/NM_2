@@ -43,7 +43,7 @@ class BalanceWindow(QWidget):
         self.n_spinbox = QSpinBox()
         self.n_spinbox.setMinimum(2)
         self.n_spinbox.setMaximum(1000000)
-        self.n_spinbox.setValue(2)
+        self.n_spinbox.setValue(1000)
         params_layout.addWidget(n_label, 1, 0)
         params_layout.addWidget(self.n_spinbox, 1, 1)
 
