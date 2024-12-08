@@ -2,7 +2,7 @@
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QComboBox, QLabel, QSpinBox, QMessageBox,
-    QTableWidget, QTableWidgetItem, QGridLayout, QSizePolicy, QFileDialog
+    QTableWidget, QTableWidgetItem, QGridLayout, QSizePolicy, QFileDialog, QCheckBox
 )
 from calculation_handler import CalculationHandler
 from plot_manager import PlotManager
@@ -42,10 +42,14 @@ class BalanceWindow(QWidget):
         n_label = QLabel("Количество участков разбиения:")
         self.n_spinbox = QSpinBox()
         self.n_spinbox.setMinimum(2)
-        self.n_spinbox.setMaximum(1000000)  # Устанавливаем большое максимальное значение
+        self.n_spinbox.setMaximum(1000000)
         self.n_spinbox.setValue(2)
         params_layout.addWidget(n_label, 1, 0)
         params_layout.addWidget(self.n_spinbox, 1, 1)
+
+        # Checkbox to use NumPy solver
+        self.use_numpy_checkbox = QCheckBox("Использовать NumPy Solver")
+        params_layout.addWidget(self.use_numpy_checkbox, 2, 0, 1, 2)
 
         # Buttons
         self.run_button = QPushButton("Запуск")
@@ -55,7 +59,7 @@ class BalanceWindow(QWidget):
         self.display_button = QPushButton("Отобразить результаты")
         self.help_button = QPushButton("Справка")
 
-        # Установка размеров кнопок
+        # Reduce size of buttons and area
         buttons = [
             self.run_button, self.clear_button,
             self.save_button, self.load_button,
@@ -63,43 +67,38 @@ class BalanceWindow(QWidget):
         ]
         for button in buttons:
             button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            button.setMinimumHeight(40)  # Увеличиваем высоту кнопок
+            button.setMinimumHeight(30)
+            button.setMaximumHeight(30)
 
-        # Организация кнопок в два ряда
-        buttons_layout_top = QHBoxLayout()
-        buttons_layout_top.addWidget(self.run_button)
-        buttons_layout_top.addWidget(self.clear_button)
-        buttons_layout_top.addWidget(self.save_button)
+        # Organize buttons compactly
+        buttons_layout = QGridLayout()
+        buttons_layout.setSpacing(5)
+        buttons_layout.addWidget(self.run_button, 0, 0)
+        buttons_layout.addWidget(self.clear_button, 0, 1)
+        buttons_layout.addWidget(self.save_button, 1, 0)
+        buttons_layout.addWidget(self.load_button, 1, 1)
+        buttons_layout.addWidget(self.display_button, 2, 0)
+        buttons_layout.addWidget(self.help_button, 2, 1)
 
-        buttons_layout_bottom = QHBoxLayout()
-        buttons_layout_bottom.addWidget(self.load_button)
-        buttons_layout_bottom.addWidget(self.display_button)
-        buttons_layout_bottom.addWidget(self.help_button)
-
-        # Добавляем отступы между рядами кнопок
-        buttons_main_layout = QVBoxLayout()
-        buttons_main_layout.addLayout(buttons_layout_top)
-        buttons_main_layout.addLayout(buttons_layout_bottom)
-
-        # Добавляем кнопки в params_layout
-        params_layout.addLayout(buttons_main_layout, 2, 0, 1, 2)
+        # Add buttons layout to params_layout
+        params_layout.addLayout(buttons_layout, 3, 0, 1, 2)
 
         # Table to display results
         self.result_table = QTableWidget()
         self.result_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.result_table.setMinimumHeight(200)  # Устанавливаем минимальную высоту таблицы
+        self.result_table.setMinimumHeight(200)
 
         # Arrange layouts
         upper_layout = QHBoxLayout()
         params_widget = QWidget()
         params_widget.setLayout(params_layout)
         params_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        params_widget.setFixedWidth(600)  # Увеличиваем ширину панели с параметрами
+        params_widget.setFixedWidth(300)
         upper_layout.addWidget(params_widget)
+        upper_layout.addLayout(self.graph_layout)
 
         main_layout.addLayout(upper_layout)
         main_layout.addWidget(self.result_table)
-        main_layout.addLayout(self.graph_layout)
 
         self.setLayout(main_layout)
 
@@ -118,8 +117,13 @@ class BalanceWindow(QWidget):
             step_size = 1 / n
             num_nodes = n + 1
 
+            use_numpy = self.use_numpy_checkbox.isChecked()
+
             if task_name == "Тестовая задача":
-                x, v, list_u, eps, id_eps, df = self.calculation_handler.perform_test_task(n)
+                if use_numpy:
+                    x, v, list_u, eps, id_eps, df = self.calculation_handler.perform_test_task_numpy(n)
+                else:
+                    x, v, list_u, eps, id_eps, df = self.calculation_handler.perform_test_task(n)
                 self.plot_manager.plot_test_task(x, v, list_u)
                 self.display_results(df)
                 self.info_message = (
@@ -129,7 +133,10 @@ class BalanceWindow(QWidget):
                     f"Максимальная погрешность = {eps}, на шаге {id_eps+1}"
                 )
             else:
-                x, v, v2_interp, eps, id_eps, df = self.calculation_handler.perform_main_task(n)
+                if use_numpy:
+                    x, v, v2_interp, eps, id_eps, df = self.calculation_handler.perform_main_task_numpy(n)
+                else:
+                    x, v, v2_interp, eps, id_eps, df = self.calculation_handler.perform_main_task(n)
                 self.plot_manager.plot_main_task(x, v, v2_interp)
                 self.display_results(df)
                 self.info_message = (

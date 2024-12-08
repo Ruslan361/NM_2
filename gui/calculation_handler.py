@@ -1,7 +1,8 @@
 # calculation_handler.py
-
+import numpy as np
 import pandas as pd
 from back import MainTask, TestTask, method_balance
+import back.numpy_solver as solver
 
 class CalculationHandler:
     def __init__(self):
@@ -37,3 +38,39 @@ class CalculationHandler:
             '|v_2n - v_n|': eps_list
         })
         return x, v, v2_interp, eps, id_eps, df
+
+    def perform_test_task_numpy(self, n):
+        task = solver.TestTask()
+        x, v = solver.solve_task(n, task)
+        x = np.array(x)
+        v = np.array(v)
+        u = np.array([task.u(xi) for xi in x])
+        eps_list = np.abs(u - v)
+        eps = np.max(eps_list)
+        id_eps = np.argmax(eps_list)
+        df = pd.DataFrame({
+            'x': x,
+            'v': v,
+            'u': u,
+            '|u - v|': eps_list
+        })
+        return x, v, u, float(eps), int(id_eps), df
+
+    def perform_main_task_numpy(self, n):
+        task = solver.MainTask()
+        x, v = solver.solve_task(n, task)
+        x2, v2 = solver.solve_task(2 * n, task)
+        x = np.array(x)
+        v = np.array(v)
+        v2 = np.array(v2)
+        v2_interp = v2[::2]
+        eps_list = np.abs(v2_interp - v)
+        eps = np.max(eps_list)
+        id_eps = np.argmax(eps_list)
+        df = pd.DataFrame({
+            'x': x,
+            'v_n': v,
+            'v_2n': v2_interp,
+            '|v_2n - v_n|': eps_list
+        })
+        return x.tolist(), v.tolist(), v2_interp.tolist(), float(eps), int(id_eps), df
