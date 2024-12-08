@@ -1,4 +1,15 @@
-def Thomas_Shelby_algorythm(matrix_A, vector_b):
+from typing import List, Tuple
+def Thomas_Shelby_algorythm(matrix_A: List[List[float]], vector_b: List[float]) -> List[float]:
+    """
+    Реализация алгоритма прогонки (метод Томаса) для решения трёхдиагональных систем уравнений.
+    
+    Args:
+        matrix_A (List[List[float]]): Трёхдиагональная матрица коэффициентов.
+        vector_b (List[float]): Вектор правых частей.
+    
+    Returns:
+        List[float]: Вектор решений y.
+    """
     size = len(vector_b)
     y = []
     alpha = [0,]

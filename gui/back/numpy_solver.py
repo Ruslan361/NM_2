@@ -2,6 +2,7 @@ import numpy as np
 from numba import njit, types
 from numba.experimental import jitclass
 from numba import njit, float64, types
+from typing import List, Tuple
 
 # Спецификация для класса
 spec = [
@@ -12,7 +13,26 @@ spec = [
 ]
 @jitclass(spec)
 class TestTask:
+    """
+    Класс MainTask представляет основную задачу для решения дифференциального уравнения.
+    
+    Args:
+        KSI (float): Параметр KSI.
+        MU1 (float): Граничное условие слева.
+        MU2 (float): Граничное условие справа.
+    
+    Methods:
+        k1(x: float) -> float: Возвращает значение коэффициента k1.
+        k2(x: float) -> float: Возвращает значение коэффициента k2.
+        q1(x: float) -> float: Возвращает значение коэффициента q1.
+        q2(x: float) -> float: Возвращает значение коэффициента q2.
+        f1(x: float) -> float: Возвращает значение коэффициента f1.
+        f2(x: float) -> float: Возвращает значение коэффициента f2.
+    """
     def __init__(self):
+        """
+        Инициализирует экземпляр класса MainTask.
+        """
         self.KSI = 0.4
         self.MU1 = 0
         self.MU2 = 1
@@ -21,25 +41,88 @@ class TestTask:
             [-0.47202455073443716628, -4.33108482358005765177]
         ], dtype=np.float64)
 
-    def k1(self, x):
+    def k1(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента k1.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента k1.
+        """
         return 1.4
 
-    def k2(self, x):
+    def k2(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента k2.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента k2.
+        """
         return 0.4
 
-    def q1(self, x):
+    def q1(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента q1.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента q1.
+        """
         return 0.4
 
-    def q2(self, x):
+    def q2(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента q2.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента q2.
+        """
         return 0.16
 
-    def f1(self, x):
+    def f1(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента f1.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента f1.
+        """
         return 0.4
 
-    def f2(self, x):
+    def f2(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента f2.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента f2.
+        """
         return np.exp(-0.4)
 
-    def u(self, x):
+    def u(self, x: float) -> float:
+        """
+        Возвращает точное решение u в точке x.
+        
+        Args:
+            x (float): Точка, в которой вычисляется решение.
+        
+        Returns:
+            float: Значение точного решения u в точке x.
+        """
         if x < self.KSI:
             return self.CONST[0, 0] * np.exp(x * np.sqrt(2. / 7.)) + self.CONST[0, 1] * np.exp(
                 -x * np.sqrt(2. / 7.)) + 1.
@@ -54,32 +137,116 @@ spec = [
 ]
 @jitclass(spec)
 class MainTask:
+    """
+    Класс MainTask представляет основную задачу для решения дифференциального уравнения.
+    
+    Args:
+        KSI (float): Параметр KSI.
+        MU1 (float): Граничное условие слева.
+        MU2 (float): Граничное условие справа.
+    
+    Methods:
+        k1(x: float) -> float: Возвращает значение коэффициента k1.
+        k2(x: float) -> float: Возвращает значение коэффициента k2.
+        q1(x: float) -> float: Возвращает значение коэффициента q1.
+        q2(x: float) -> float: Возвращает значение коэффициента q2.
+        f1(x: float) -> float: Возвращает значение коэффициента f1.
+        f2(x: float) -> float: Возвращает значение коэффициента f2.
+    """
     def __init__(self):
+        """
+        Инициализирует экземпляр класса MainTask.
+        """
         self.KSI = 0.4
         self.MU1 = 0.0
         self.MU2 = 1.0
 
-    def k1(self, x):
+    def k1(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента k1.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента k1.
+        """
         return (x + 1)
 
-    def k2(self, x):
+    def k2(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента k2.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента k2.
+        """
         return x
 
-    def q1(self, x):
+    def q1(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента q1.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента q1.
+        """
         return x
 
-    def q2(self, x):
+    def q2(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента q2.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента q2.
+        """
         return x * x
 
-    def f1(self, x):
+    def f1(self, x: float) -> float:
+        """
+        Возвращает значение коэффициента f1.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента f1.
+        """
         return x
 
     def f2(self, x):
+        """
+        Возвращает значение коэффициента f2.
+        
+        Args:
+            x (float): Точка, в которой вычисляется коэффициент.
+        
+        Returns:
+            float: Значение коэффициента f2.
+        """
         return np.exp(-x)
 
 # расчет коэфициентов в уравнении
-@njit
-def calc_ai(x, step, task):
+@njit(nopython=True, cache=True, inline='always', nogil=True)
+def calc_ai(x: float, step: float, task: TestTask) -> float:
+    """
+    Вычисляет коэффициент ai.
+    
+    Args:
+        x (float): Точка, в которой вычисляется коэффициент.
+        step (float): Шаг разбиения.
+        task (TestTask): Экземпляр задачи.
+    
+    Returns:
+        float: Значение коэффициента ai.
+    """
     xi = x
     xi_1 = x - step
 
@@ -89,8 +256,20 @@ def calc_ai(x, step, task):
         return task.k2(xi - step/2.0)
     else:
         return ((1/step)*( ((task.KSI - xi_1) / (task.k1((xi_1 + task.KSI)/2.0))) + ((xi - task.KSI) / (task.k2((task.KSI + xi)/2.0))) ))**(-1)
-@njit
-def calc_di(x, step, task):
+
+@njit(nopython=True, cache=True, inline='always', nogil=True)
+def calc_di(x: float, step: float, task: TestTask) -> float:
+    """
+    Вычисляет коэффициент di.
+    
+    Args:
+        x (float): Точка, в которой вычисляется коэффициент.
+        step (float): Шаг разбиения.
+        task (TestTask): Экземпляр задачи.
+    
+    Returns:
+        float: Значение коэффициента di.
+    """
     xi_up = x + step/2.0
     xi_down = x - step/2.0
 
@@ -100,8 +279,20 @@ def calc_di(x, step, task):
         return task.q2(x)
     else:
         return (1/step)*((task.q1((xi_down + task.KSI)/2.0) * (task.KSI - xi_down)) + (task.q2((task.KSI + xi_up)/2.0) * (xi_up - task.KSI)))
-@njit
-def calc_phi_i(x, step, task):
+
+@njit(nopython=True, cache=True, inline='always', nogil=True)
+def calc_phi_i(x: float, step: float, task: TestTask) -> float:
+    """
+    Вычисляет коэффициент phi_i.
+    
+    Args:
+        x (float): Точка, в которой вычисляется коэффициент.
+        step (float): Шаг разбиения.
+        task (TestTask): Экземпляр задачи.
+    
+    Returns:
+        float: Значение коэффициента phi_i.
+    """
     xi_up = x + step/2.0
     xi_down = x - step/2.0
 
@@ -111,9 +302,19 @@ def calc_phi_i(x, step, task):
         return task.f2(x)
     else:
         return (1/step)*(task.f1((xi_down + task.KSI)/2.0) * (task.KSI - xi_down) + task.f2((task.KSI + xi_up)/2.0) * (xi_up - task.KSI) )
-@njit
-def calc_coefficients(n, task):
-    """Рассчитывает коэффициенты для метода прогонки."""
+
+@njit(nopython=True, cache=True, inline='always', nogil=True)
+def calc_coefficients(n: int, task: TestTask) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Рассчитывает коэффициенты для метода прогонки.
+    
+    Args:
+        n (int): Количество разбиений.
+        task (TestTask): Экземпляр задачи.
+    
+    Returns:
+        Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]: Кортеж массивов коэффициентов A, B, C, phi и координат x.
+    """
     h = 1.0 / n
     x = np.linspace(0, 1, n + 1)
 
@@ -141,9 +342,20 @@ def calc_coefficients(n, task):
 
     return A, B, C, phi, x
 
-@njit
-def thomas_algorithm(A, B, C, phi):
-    """Решает СЛАУ с трехдиагональной матрицей методом прогонки."""
+@njit(nopython=True, cache=True, inline='always', nogil=True)
+def thomas_algorithm(A: np.ndarray, B: np.ndarray, C: np.ndarray, phi: np.ndarray) -> np.ndarray:
+    """
+    Решает СЛАУ с трехдиагональной матрицей методом прогонки.
+    
+    Args:
+        A (np.ndarray): Поддиагональ.
+        B (np.ndarray): Наддиагональ.
+        C (np.ndarray): Главная диагональ.
+        phi (np.ndarray): Вектор правых частей.
+    
+    Returns:
+        np.ndarray: Вектор решений y.
+    """
     n = len(phi)
     alpha = np.zeros(n)
     beta = np.zeros(n)
@@ -165,9 +377,18 @@ def thomas_algorithm(A, B, C, phi):
 
     return y
 
-@njit
-def solve_task(n, task):
-    """Основная функция для решения задачи."""
+@njit(nopython=True, cache=True, inline='always', nogil=True)
+def solve_task(n: int, task: TestTask) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Основная функция для решения задачи.
+    
+    Args:
+        n (int): Количество разбиений.
+        task (TestTask): Экземпляр задачи.
+    
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Кортеж массивов координат x и решений y.
+    """
     A, B, C, phi, x = calc_coefficients(n, task)
     y = thomas_algorithm(A, B, C, phi)
     return x, y
